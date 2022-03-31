@@ -1,25 +1,27 @@
-import { createAction, createReducer } from "@reduxjs/toolkit";
+import { createAction, createReducer, createSlice } from "@reduxjs/toolkit";
 
-export const bugAdded = createAction("bugAdded");
-export const bugRemoved = createAction("bugRemoved");
-export const bugResolved = createAction("bugResolved");
-
-//reducers
+//reducers actions and actions type
 let lastId = 0;
-export default createReducer([], {
-  [bugAdded.type]: (bugs, action) => {
-    bugs.push({
-      id: ++lastId,
-      description: action.payload.description,
-      resolved: false,
-    });
-  },
-  [bugResolved.type]: (bugs, action) => {
-    const index = bugs.findIndex((bug) => bug.id === action.payload.id);
-    bugs[index].resolved = true;
-  },
-  [bugRemoved]: (bugs, action) => {
-    const index = bugs.findIndex((bug) => bug.id === action.payload.id);
-    bugs.splice(index, 1);
+const slice = createSlice({
+  name: "bugs",
+  initialState: [],
+  reducers: {
+    bugAdded: (bugs, action) => {
+      bugs.push({
+        id: ++lastId,
+        description: action.payload.description,
+        resolved: false,
+      });
+    },
+    bugResolved: (bugs, action) => {
+      const index = bugs.findIndex((bug) => bug.id === action.payload.id);
+      bugs[index].resolved = true;
+    },
+    bugRemoved: (bugs, action) => {
+      const index = bugs.findIndex((bug) => bug.id === action.payload.id);
+      bugs.splice(index, 1);
+    },
   },
 });
+export const { bugAdded, bugResolved, bugRemoved } = slice.actions;
+export default slice.reducer;
